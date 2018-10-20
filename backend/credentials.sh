@@ -1,0 +1,6 @@
+export PG_DATABASE="ss_manager"
+export PG_ID="postgres"
+export PG_PASSWORD=""
+export PG_HOST="localhost"
+export JWT_KEY="ss-manager-key"
+export JWT_EXP_DATE="30d"
