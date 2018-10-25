@@ -26,7 +26,7 @@ exports.getApplicationList = function(req, res) {
 }
 
 exports.executeSparkSubmit = function(req, res) {
-    exec('spark-submit --master yarn ~/testApp1.py localhost 9999')
+    exec('spark-submit --master yarn ~/testApp1.py localhost 9999', {stdio: 'ignore'})
     .then(({stdout, stderr})=>{
         res.sendStatus(200);
     })
