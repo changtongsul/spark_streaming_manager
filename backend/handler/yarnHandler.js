@@ -1,6 +1,6 @@
 const rp = require('request-promise');
 const util = require('util');
-const exec = util.promisifiy(require('child_process').exec);
+const exec = util.promisify(require('child_process').exec);
 
 const StreamingApp = require('../module/sequelize').models.StreamingApp;
 
