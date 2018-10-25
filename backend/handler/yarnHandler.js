@@ -1,36 +1,37 @@
 const rp = require('request-promise');
-const exec = require('child_process').exec;
+const util = require('util');
+const exec = util.promisifiy(require('child_process').exec);
 
 const StreamingApp = require('../module/sequelize').models.StreamingApp;
 
 const resourceManagerUrl = `http://${process.env.RM_URL}:${process.env.RM_PORT}/ws/v1`;
 
 exports.getApplicationList = function(req, res) {
-    StreamingApp.findAll()
+    // StreamingApp.findAll()
+    // .then((appList)=>{
+    //     res.status(200).json(appList);
+    // })
+    // .catch((err)=>{
+    //     console.error('Error getting application list: ', err);
+    //     res.sendStatus(500);
+    // });
+    rp(resourceManagerUrl+'/cluster/apps')
     .then((appList)=>{
         res.status(200).json(appList);
     })
     .catch((err)=>{
-        console.error('Error getting application list: ', err);
+        console.error('Error getting application list:', err);
         res.sendStatus(500);
     });
 }
 
-exports.getNewAppId = function(req, res) {
-    rp({url:resourceManagerUrl+'/cluster/apps/new-application', method:'POST'})
-    .then((newAppObj)=>{
-        exec(`${process.env.SPARK_LOC}bin/spark-submit --master yarn ${process.env.SPARK_LOC}examples/src/main/python/streaming/network_wordcount.py localhost 9999`, (err, stdout, stderr)=>{
-           if(err) {
-               console.error(`error: ${err}`);
-               return
-           } 
-           console.log(`stdout: ${stdout}`);
-           console.log(`stderr: ${stderr}`);
-        })
-        res.status(200).json(newAppObj);
+exports.executeSparkSubmit = function(req, res) {
+    exec('spark-submit --master yarn ~/testApp1.py localhost 9999')
+    .then(({stdout, stderr})=>{
+        res.sendStatus(200);
     })
     .catch((err)=>{
-        console.error(err);
+        console.error('Error executing test application:', err);
         res.sendStatus(500);
     });
 }
