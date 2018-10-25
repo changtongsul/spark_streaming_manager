@@ -16,7 +16,6 @@ function createTokenForUser(user, callback) {
 }
 
 exports.signUp = function(req, res) {
-    console.log(req);
     console.log(req.body);
     const userInfo = {
       username: req.body.username,
@@ -65,48 +64,48 @@ exports.signUp = function(req, res) {
         res.sendStatus(500);
       });
   
+};
+
+exports.signIn = function(req, res) {
+  const response = {
+    success: false,
+    token: null,
+    userInfo: null,
+    message: ''
   };
 
-  exports.signIn = function(req, res) {
-    const response = {
-      success: false,
-      token: null,
-      userInfo: null,
-      message: ''
-    };
+  createTokenForUser(req.user, function(err, token) {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      response.success = true;
+      response.token = token;
+      response.userInfo = req.user;
+      response.message = 'Successfully signed in and created token';
+      res.json(response);
+    }
+  });
+};
   
-    createTokenForUser(req.user, function(err, token) {
-      if (err) {
-        res.sendStatus(500);
-      } else {
-        response.success = true;
-        response.token = token;
-        response.userInfo = req.user;
-        response.message = 'Successfully signed in and created token';
-        res.json(response);
-      }
-    });
+exports.refreshToken = function(req, res) {
+  const response = {
+    success: false,
+    token: null,
+    is_admin: false,
+    message: ''
   };
-  
-  exports.refreshToken = function(req, res) {
-    const response = {
-      success: false,
-      token: null,
-      is_admin: false,
-      message: ''
-    };
-  
-    createTokenForUser(req.user, function(err, token) {
-      if (err) {
-        res.sendStatus(500);
-      } else {
-        response.success = true;
-        response.token = token;
-        response.message = 'Successfully created new token';
-        if (req.user.is_admin) {
-          response.is_admin = true;
-        }
-        res.json(response);
+
+  createTokenForUser(req.user, function(err, token) {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      response.success = true;
+      response.token = token;
+      response.message = 'Successfully created new token';
+      if (req.user.is_admin) {
+        response.is_admin = true;
       }
-    });
-  };
+      res.json(response);
+    }
+  });
+};

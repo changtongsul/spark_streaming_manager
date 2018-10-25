@@ -24,10 +24,12 @@ const sequelize = new Sequelize(
 );
 
 const User = sequelize.import('../model/user');
+const StreamingApp = sequelize.import('../model/streamingApp');
 
 db.sequelize = sequelize;
 db.models = {};
 
 db.models.User = User;
+db.models.StreamingApp = StreamingApp;
 
 module.exports = db;
