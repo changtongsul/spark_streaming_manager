@@ -18,4 +18,7 @@ router.post('/apps/registered', yarnHandler.registerApp);
 router.get('/apps/:id/state', yarnHandler.getAppState);
 router.put('/apps/:id/state', yarnHandler.killApp);
 
+router.get('/apps/:id/dependency', yarnHandler.getDependency)
+router.post('/apps/:id/dependency', yarnHandler.setDependency)
+
 module.exports = router;

@@ -115,3 +115,30 @@ exports.killApp = function(req, res) {
         res.sendStatus(500);
     });
 }
+
+exports.getDependency = function(req, res) {
+    const id = req.params.id;
+    StreamingApp.findAll({
+        where: {id}
+    }).then((data)=>{
+        res.status(200).json({dependency: data.dataValues.depApp});
+    }).catch((err)=>{
+        console.error('Error getting application dependecny:', err);
+        res.sendStatus(500);
+    });
+}
+
+exports.setDependency = function(req, res) {
+    const id = req.params.id;
+    const depApp = req.body.dependency;
+    StreamingApp.findOne({
+        where: {id}
+    }).then((app)=>{
+        app.depApp = depApp;
+        return app.save();
+    }).then((data)=>{
+        res.status(200).json(data);
+    }).catch((err)=>{
+        console.error('Error setting application dependency:', err);
+    });
+}

@@ -11,6 +11,9 @@ module.exports = function(sequelize, DataTypes) {
         },
         appId: {
             type: DataTypes.TEXT, allowNull: false
+        },
+        depApp: {
+            type: DataTypes.Integer
         }
     }, {
         timestamps: false,
