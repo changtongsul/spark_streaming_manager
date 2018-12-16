@@ -37,6 +37,7 @@
     "@ngrx/store": "^6.1.0",
     "core-js": "^2.5.4",
     "rxjs": "~6.2.0",
+    "vis": "^4.21.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
@@ -47,6 +48,7 @@
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
+    "@types/vis": "^4.21.9",
     "codelyzer": "~4.3.0",
     "husky": "^1.1.2",
     "jasmine-core": "~2.99.1",

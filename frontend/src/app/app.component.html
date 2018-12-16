@@ -1,20 +1,63 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+<div class="jumbotron">
+  <h1 class="display-4">Spark Streaming Manager</h1>
+  <p class="lead">Register/Manage Spark Streaming Apps and their Dependencies</p>
 </div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
-
+<div class="card text-center mb-3">
+  <div class="card-body">
+    <h4 class="card-title">App Dependency Graph</h4>
+    <div #networkContainer style="height:20vh"></div>
+  </div>
+</div>
+<div class="input-group mb-3">
+  <input type="text" class="form-control" placeholder="App Name" [(ngModel)]="newAppName">
+  <input type="text" class="form-control" placeholder="Dependent App" [(ngModel)]="newDepApp">
+  <div class="input-group-append">
+    <button class="btn btn-outline-secondary" type="button" (click)="registerNewApp()">Register</button>
+  </div>
+</div>
+<div *ngIf="clickedApp" class="card mb-3">
+  <div class="card-body">
+    <h6 class="card-title">{{clickedApp.appName}}</h6>
+    <p class="card-text">State: {{clickedAppState?.state}}</p>
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-primary" (click)="submitNewApp()">Submit</button>
+        <button type="button" class="btn btn-primary">Kill</button>
+      </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Cluster Metric</h5>
+        <p class="card-text">Hadoop Cluster Metrics</p>
+        <ul class="list-group" *ngIf="metrics">
+          <li class="list-group-item">Active Nodes: {{metrics?.activeNodes}}</li>
+          <li class="list-group-item">Apps Submitted: {{metrics.appsSubmitted}}</li>
+          <li class="list-group-item">Apps Pending: {{metrics.appsPending}}</li>
+          <li class="list-group-item">Apps Running: {{metrics.appsRunning}}</li>
+          <li class="list-group-item">Apps Completed: {{metrics.appsCompleted}}</li>
+          <li class="list-group-item">Apps Failed: {{metrics.appsFailed}}</li>
+          <li class="list-group-item">Apps Killed: {{metrics.appsKilled}}</li>
+          <li class="list-group-item">Available MB: {{metrics.availableMB}}</li>
+          <li class="list-group-item">Available Virtual Cores: {{metrics.availableVirtualCores}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Cluster Info</h5>
+        <p class="card-text">Hadoop Cluster Info</p>
+        <ul class="list-group" *ngIf="info">
+          <li class="list-group-item">Cluster State: {{info?.haState}}</li>
+          <li class="list-group-item">Cluster Version: {{info?.hadoopVersion}}</li>
+          <li class="list-group-item">RM State: {{info?.state}}</li>
+          <li class="list-group-item">RM Version: {{info?.resourceManagerVersion}}</li>
+          <li class="list-group-item">Started: {{info?.startedOn}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
