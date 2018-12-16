@@ -6,6 +6,28 @@ const StreamingApp = require('../module/sequelize').models.StreamingApp;
 
 const resourceManagerUrl = `http://${process.env.RM_URL}:${process.env.RM_PORT}/ws/v1`;
 
+exports.getClusterMetrics = function(req, res) {
+    rp(resourceManagerUrl+'/cluster/metrics')
+    .then((metrics)=>{
+        res.status(200).json(metrics);
+    })
+    .catch((err)=>{
+        console.error('Error getting cluster metrics:', err);
+        res.sendStatus(500);
+    });
+}
+
+exports.getClusterInfo = function(req, res) {
+    rp(resourceManagerUrl+'/cluster/info')
+    .then((info)=>{
+        res.status(200).json(info);
+    })
+    .catch((err)=>{
+        console.error('Error getting cluster info:', err);
+        res.sendStatus(500);
+    });
+}
+
 exports.getApplicationList = function(req, res) {
     rp(resourceManagerUrl+'/cluster/apps')
     .then((appList)=>{
@@ -17,20 +39,33 @@ exports.getApplicationList = function(req, res) {
     });
 }
 
+exports.registerApp = function(req, res) {
+    var newAppInfo = {
+        appName: req.body.appName,
+        appId: ''
+    };
+    rp.post(resourceManagerUrl+'/cluster/apps/new-application')
+    .then((newApp)=>{
+        newAppInfo.appId = newApp.application_id;
+        return StreamingApp.create(newAppInfo)
+    })
+    .then((data)=>{
+        var newApp = {
+            id: data.dataValues.id,
+            appName: data.dataValues.appName,
+            appId: data.dataValues.appId
+        };
+        res.status(200).json(newApp);
+    })
+    .catch((err)=>{
+        console.error('Error registering new application:', err);
+        res.sendStatus(500);
+    })
+}
+
 exports.executeSparkSubmit = function(req, res) {
     exec('spark-submit --master yarn ~/sample_queue_stream.py', {stdio: 'ignore'});
     res.status(200).json({message:"sample_queue_stream.py submitted"});
-    // .then(({stdout, stderr})=>{
-    //     return rp(resourceManagerUrl + '/cluster/apps')
-    // })
-    // .then((appList)=>{
-    //     console.log(appList);
-    //     res.status(200).json(appList);
-    // })
-    // .catch((err)=>{
-    //     console.error('Error executing test application:', err);
-    //     res.sendStatus(500);
-    // });
 }
 
 exports.getAppState = function(req, res) {
@@ -60,28 +95,6 @@ exports.killApp = function(req, res) {
         res.status(200).json(appState);
     }).catch((err)=>{
         console.error('Error getting application state: ', err);
-        res.sendStatus(500);
-    });
-}
-
-exports.getClusterMetrics = function(req, res) {
-    rp(resourceManagerUrl+'/cluster/metrics')
-    .then((metrics)=>{
-        res.status(200).json(metrics);
-    })
-    .catch((err)=>{
-        console.error('Error getting cluster metrics:', err);
-        res.sendStatus(500);
-    });
-}
-
-exports.getClusterInfo = function(req, res) {
-    rp(resourceManagerUrl+'/cluster/info')
-    .then((info)=>{
-        res.status(200).json(info);
-    })
-    .catch((err)=>{
-        console.error('Error getting cluster info:', err);
         res.sendStatus(500);
     });
 }
