@@ -103,7 +103,7 @@ exports.getAppState = function(req, res) {
         console.error('Error getting application state: ', err);
         console.log(err.statusCode);
         if(err.statusCode == 404) {
-            res.status(404).json({state:"NOT_SUBMITTED"});
+            res.status(200).json({state:"NOT_SUBMITTED"});
         }
         else {
             res.sendStatus(500);
