@@ -20,7 +20,11 @@ exports.getApplicationList = function(req, res) {
 exports.executeSparkSubmit = function(req, res) {
     exec('spark-submit --master yarn ~/sample_queue_stream.py', {stdio: 'ignore'})
     .then(({stdout, stderr})=>{
-        res.sendStatus(200);
+        return rp(resourceManagerUrl + '/cluster/apps')
+    })
+    .then((appList)=>{
+        console.log(appList);
+        res.sendStatus(200).json(appList);
     })
     .catch((err)=>{
         console.error('Error executing test application:', err);
