@@ -46,7 +46,7 @@ exports.registerApp = function(req, res) {
     };
     rp.post(resourceManagerUrl+'/cluster/apps/new-application')
     .then((newApp)=>{
-        newAppInfo.appId = newApp.application_id;
+        newAppInfo.appId = newApp["application-id"];
         return StreamingApp.create(newAppInfo)
     })
     .then((data)=>{
