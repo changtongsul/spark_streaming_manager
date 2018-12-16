@@ -44,7 +44,13 @@ exports.registerApp = function(req, res) {
         appName: req.body.appName,
         appId: ''
     };
-    rp.post(resourceManagerUrl+'/cluster/apps/new-application')
+    const postOption = {
+        method: 'POST',
+        uri: resourceManagerUrl+'/cluster/apps/new-application',
+        body: {},
+        json: true
+    };
+    rp.post(postOption)
     .then((newApp)=>{
         newAppInfo.appId = newApp["application-id"];
         return StreamingApp.create(newAppInfo)
