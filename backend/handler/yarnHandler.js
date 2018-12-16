@@ -58,6 +58,7 @@ exports.getRegisteredApps = function(req, res) {
 exports.registerApp = function(req, res) {
     var newAppInfo = {
         appName: req.body.appName,
+        depApp: req.body.depApp,
         appId: ''
     };
     const postOption = {
