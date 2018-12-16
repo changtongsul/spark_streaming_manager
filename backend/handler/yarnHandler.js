@@ -76,7 +76,8 @@ exports.registerApp = function(req, res) {
         var newApp = {
             id: data.dataValues.id,
             appName: data.dataValues.appName,
-            appId: data.dataValues.appId
+            appId: data.dataValues.appId,
+            depApp: data.dataValues.depApp
         };
         res.status(200).json(newApp);
     })
