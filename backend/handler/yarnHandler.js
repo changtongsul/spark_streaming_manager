@@ -70,13 +70,14 @@ exports.registerApp = function(req, res) {
     rp.post(postOption)
     .then((newApp)=>{
         var tempAppId = newApp["application-id"];
-        tempAppId = tempAppId.slice(0,-4);
+	console.log(tempAppId);
         var appNumber = parseInt(tempAppId.slice(-4)) + 1;
+        tempAppId = tempAppId.slice(0,-4);
         var newAppNumString = "0000" + appNumber;
         newAppNumString = newAppNumString.slice(-4);
         tempAppId = tempAppId + newAppNumString;
         console.log(newAppNumString);
-        newAppInfo.appId = newAppNumString;
+        newAppInfo.appId = tempAppId;
         return StreamingApp.create(newAppInfo)
     })
     .then((data)=>{
