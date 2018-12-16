@@ -18,18 +18,19 @@ exports.getApplicationList = function(req, res) {
 }
 
 exports.executeSparkSubmit = function(req, res) {
-    exec('spark-submit --master yarn ~/sample_queue_stream.py', {stdio: 'ignore'})
-    .then(({stdout, stderr})=>{
-        return rp(resourceManagerUrl + '/cluster/apps')
-    })
-    .then((appList)=>{
-        console.log(appList);
-        res.sendStatus(200).json(appList);
-    })
-    .catch((err)=>{
-        console.error('Error executing test application:', err);
-        res.sendStatus(500);
-    });
+    exec('spark-submit --master yarn ~/sample_queue_stream.py', {stdio: 'ignore'});
+    res.status(200).json({message:"sample_queue_stream.py submitted"});
+    // .then(({stdout, stderr})=>{
+    //     return rp(resourceManagerUrl + '/cluster/apps')
+    // })
+    // .then((appList)=>{
+    //     console.log(appList);
+    //     res.status(200).json(appList);
+    // })
+    // .catch((err)=>{
+    //     console.error('Error executing test application:', err);
+    //     res.sendStatus(500);
+    // });
 }
 
 exports.getAppState = function(req, res) {
