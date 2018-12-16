@@ -39,6 +39,22 @@ exports.getApplicationList = function(req, res) {
     });
 }
 
+exports.executeSparkSubmit = function(req, res) {
+    exec('spark-submit --master yarn ~/sample_queue_stream.py', {stdio: 'ignore'});
+    res.status(200).json({message:"sample_queue_stream.py submitted"});
+}
+
+exports.getRegisteredApps = function(req, res) {
+    StreamingApp.findAll()
+    .then((registeredAppList)=>{
+        res.status(200).json(registeredAppList)
+    })
+    .catch((err)=>{
+        console.error('Error getting registered applications:', err);
+        res.sendStatus(500);
+    });
+}
+
 exports.registerApp = function(req, res) {
     var newAppInfo = {
         appName: req.body.appName,
@@ -67,22 +83,6 @@ exports.registerApp = function(req, res) {
         console.error('Error registering new application:', err);
         res.sendStatus(500);
     })
-}
-
-exports.getRegisteredApps = function(req, res) {
-    StreamingApp.findAll()
-    .then((registeredAppList)=>{
-        res.status(200).json(registeredAppList)
-    })
-    .catch((err)=>{
-        console.error('Error getting registered applications:', err);
-        res.sendStatus(500);
-    });
-}
-
-exports.executeSparkSubmit = function(req, res) {
-    exec('spark-submit --master yarn ~/sample_queue_stream.py', {stdio: 'ignore'});
-    res.status(200).json({message:"sample_queue_stream.py submitted"});
 }
 
 exports.getAppState = function(req, res) {
