@@ -10,7 +10,7 @@ router.get('/cluster/metrics', yarnHandler.getClusterMetrics);
 router.get('/cluster/info', yarnHandler.getClusterInfo);
 
 router.get('/apps', yarnHandler.getApplicationList);
-router.post('/apps', yarnHander.registerApp);
+router.post('/apps', yarnHandler.registerApp);
 
 router.get('/apps/submit', yarnHandler.executeSparkSubmit);
 
