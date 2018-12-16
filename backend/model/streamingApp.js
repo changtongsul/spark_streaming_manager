@@ -13,7 +13,7 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.TEXT, allowNull: false
         },
         depApp: {
-            type: DataTypes.Integer
+            type: DataTypes.INTEGER
         }
     }, {
         timestamps: false,
