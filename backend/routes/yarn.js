@@ -9,7 +9,8 @@ const yarnHandler = require('../handler/yarnHandler');
 router.get('/cluster/metrics', yarnHandler.getClusterMetrics);
 router.get('/cluster/info', yarnHandler.getClusterInfo);
 
-router.get('/apps', yarnHandler.getApplicationList);
+router.get('/apps/rm', yarnHandler.getApplicationList);
+router.get('/apps/registered', yarnHandler.getRegisteredApps);
 router.post('/apps', yarnHandler.registerApp);
 
 router.get('/apps/submit', yarnHandler.executeSparkSubmit);
