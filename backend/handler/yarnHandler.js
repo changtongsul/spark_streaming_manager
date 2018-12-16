@@ -7,14 +7,6 @@ const StreamingApp = require('../module/sequelize').models.StreamingApp;
 const resourceManagerUrl = `http://${process.env.RM_URL}:${process.env.RM_PORT}/ws/v1`;
 
 exports.getApplicationList = function(req, res) {
-    // StreamingApp.findAll()
-    // .then((appList)=>{
-    //     res.status(200).json(appList);
-    // })
-    // .catch((err)=>{
-    //     console.error('Error getting application list: ', err);
-    //     res.sendStatus(500);
-    // });
     rp(resourceManagerUrl+'/cluster/apps')
     .then((appList)=>{
         res.status(200).json(appList);
@@ -26,50 +18,12 @@ exports.getApplicationList = function(req, res) {
 }
 
 exports.executeSparkSubmit = function(req, res) {
-    exec('spark-submit --master yarn ~/testApp1.py localhost 9999', {stdio: 'ignore'})
+    exec('spark-submit --master yarn ~/sample_queue_stream.py', {stdio: 'ignore'})
     .then(({stdout, stderr})=>{
         res.sendStatus(200);
     })
     .catch((err)=>{
         console.error('Error executing test application:', err);
-        res.sendStatus(500);
-    });
-}
-
-exports.submitNewApplication = function(req, res) {
-    const { appName } = req.body;
-    let appInfo = {
-        appId: '',
-        appName
-    };
-    rp({
-        url: resourceManagerUrl + '/cluster/apps/new-application',
-        method: 'POST',
-        json:true
-    }).then((newAppObject)=>{
-        appInfo.appId = newAppObject["application-id"];
-        return rp({
-            url: resourceManagerUrl + '/cluster/apps',
-            method: 'POST',
-            json: true,
-            body: { 
-                "application-id": appInfo.appId,
-                "application-name": appInfo.appName,
-                "unmanaged-AM": false,
-                "max-app-attempts": 2,
-                resource: {
-                    memory: 1024,
-                    vCores: 1
-                },
-                "application-type": "SPARK",
-            }
-        });
-    }).then(()=>{
-        return StreamingApp.create(appInfo);
-    }).then((streamingApp)=>{
-        res.sendStatus(200);
-    }).catch((err)=>{
-        console.error(`Error starting ${appName} (id: ${appInfo.appId}): ${err}`);
         res.sendStatus(500);
     });
 }
