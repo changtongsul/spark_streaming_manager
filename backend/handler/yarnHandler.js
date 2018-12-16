@@ -7,7 +7,7 @@ const StreamingApp = require('../module/sequelize').models.StreamingApp;
 const resourceManagerUrl = `http://${process.env.RM_URL}:${process.env.RM_PORT}/ws/v1`;
 
 exports.getClusterMetrics = function(req, res) {
-    rp(resourceManagerUrl+'/cluster/metrics')
+    rp(resourceManagerUrl+'/cluster/metrics', {json:true})
     .then((metrics)=>{
         res.status(200).json(metrics);
     })
@@ -18,7 +18,7 @@ exports.getClusterMetrics = function(req, res) {
 }
 
 exports.getClusterInfo = function(req, res) {
-    rp(resourceManagerUrl+'/cluster/info')
+    rp(resourceManagerUrl+'/cluster/info', {json:true})
     .then((info)=>{
         res.status(200).json(info);
     })
@@ -29,7 +29,7 @@ exports.getClusterInfo = function(req, res) {
 }
 
 exports.getApplicationList = function(req, res) {
-    rp(resourceManagerUrl+'/cluster/apps')
+    rp(resourceManagerUrl+'/cluster/apps', {json:true})
     .then((appList)=>{
         res.status(200).json(appList);
     })
@@ -87,7 +87,7 @@ exports.executeSparkSubmit = function(req, res) {
 
 exports.getAppState = function(req, res) {
     const appId = req.params.id;
-    rp(`${resourceManagerUrl}/cluster/apps/${appId}/state`)
+    rp(`${resourceManagerUrl}/cluster/apps/${appId}/state`, {json:true})
     .then((appState)=>{
         res.status(200).json(appState);
     }).catch((err)=>{
