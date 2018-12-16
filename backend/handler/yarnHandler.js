@@ -128,7 +128,12 @@ exports.killApp = function(req, res) {
         res.status(200).json(appState);
     }).catch((err)=>{
         console.error('Error getting application state: ', err);
-        res.sendStatus(500);
+        if(err.statusCode == 404) {
+            res.status(200).json({state:"NOT_SUBMITTED"});
+        }
+        else {
+            res.sendStatus(500);
+        }
     });
 }
 
