@@ -27,6 +27,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   clickedApp;
   clickedAppState;
 
+  file;
+
   constructor(private app: AppService) {}
 
   ngOnInit() {}
@@ -96,5 +98,39 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.app.submitNewApp().subscribe(res => {
       console.log(res);
     });
+  }
+
+  killApp() {
+    this.app.killApp(this.clickedApp.appId).subscribe(res => {
+      console.log(res);
+    });
+  }
+
+  get submitDisable() {
+    if (this.clickedAppState) {
+      return this.clickedAppState.state !== 'NOT_SUBMITTED';
+    } else {
+      return true;
+    }
+  }
+
+  get killDisable() {
+    if (this.clickedAppState) {
+      return (
+        this.clickedAppState.state === 'FINISHED' ||
+        this.clickedAppState.state === 'KILLED' ||
+        this.clickedAppState.state === 'NOT_SUBMITTED'
+      );
+    } else {
+      return true;
+    }
+  }
+
+  fileChange(e) {
+    console.log(e, this.file);
+  }
+
+  uploadFile() {
+    alert('File successfully uploaded');
   }
 }

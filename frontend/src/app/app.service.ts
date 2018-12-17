@@ -39,6 +39,10 @@ export class AppService {
     return this.http.post(this.server + '/yarn/apps/rm', {});
   }
 
+  killApp(id: string) {
+    return this.http.put(this.server + `/yarn/apps/${id}/state`, {});
+  }
+
   getRegisteredApps() {
     return this.http.get(this.server + '/yarn/apps/registered');
   }
