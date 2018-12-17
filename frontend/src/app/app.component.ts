@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import { concatMap } from 'rxjs/operators';
+import { concatMap, mergeMap } from 'rxjs/operators';
 import { AppService } from './app.service';
 import { Network } from 'vis';
 import { of } from 'rxjs';
@@ -50,13 +50,10 @@ export class AppComponent implements OnInit, AfterViewInit {
           concatMap((node: number[]) => {
             if (node.length) {
               this.clickedApp = this.apps.filter(app => app.id === node[0])[0];
+              console.log(this.clickedApp);
+              return this.app.getDetailedAppMetrics(this.clickedApp.appId);
             } else {
               this.clickedApp = null;
-            }
-            console.log(this.clickedApp);
-            if (this.clickedApp) {
-              return this.app.getAppState(this.clickedApp.appId);
-            } else {
               return of(null);
             }
           })
@@ -64,7 +61,17 @@ export class AppComponent implements OnInit, AfterViewInit {
         .subscribe((appState: any) => {
           if (appState) {
             this.clickedAppState = appState;
+            this.updateNodeColor(
+              this.clickedApp.id,
+              this.clickedAppState.state
+            );
             console.log(appState);
+          } else {
+            if (this.clickedApp) {
+              this.app.getAppState(this.clickedApp.appId).subscribe(state => {
+                this.clickedAppState = state;
+              });
+            }
           }
         });
     });
@@ -75,6 +82,21 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.app.getInfo().subscribe((info: any) => {
       this.info = info.clusterInfo;
       console.log(info);
+    });
+  }
+
+  initializeNetwork() {
+    this.app.getRegisteredApps().subscribe(appList => {
+      this.apps = appList;
+      this.networkData = this.app.parseNetworkData(this.apps);
+      this.network = new Network(
+        this.container.nativeElement,
+        this.networkData,
+        {}
+      );
+      this.network.redraw();
+      this.clickedApp = null;
+      this.clickedAppState = null;
     });
   }
 
@@ -92,6 +114,13 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.apps = apps;
         });
       });
+  }
+
+  unregister() {
+    this.app.unregisterApp(this.clickedApp.id).subscribe(res => {
+      console.log(res);
+      this.initializeNetwork();
+    });
   }
 
   submitNewApp() {
@@ -132,5 +161,47 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   uploadFile() {
     alert('File successfully uploaded');
+  }
+
+  updateNodeColor(nodeId: number, state: string) {
+    const node = this.networkData.nodes.get(nodeId);
+    switch (state) {
+      case 'FINISHED':
+        node.color = {
+          background: '#4286f4',
+          border: '#0f213d',
+          highlight: {
+            background: '#4286f4',
+            border: '#0f213d'
+          }
+        };
+        this.networkData.nodes.update(node);
+        break;
+      case 'KILLED':
+        node.color = {
+          background: '#e02f1f',
+          border: '#a02116',
+          highlight: {
+            background: '#e02f1f',
+            border: '#a02116'
+          }
+        };
+        this.networkData.nodes.update(node);
+        break;
+      case 'ACCEPTED':
+      case 'RUNNING':
+        node.color = {
+          background: '#33c44b',
+          border: '#20701f',
+          highlight: {
+            background: '#33c44b',
+            border: '#20701f'
+          }
+        };
+        this.networkData.nodes.update(node);
+        break;
+      default:
+        break;
+    }
   }
 }

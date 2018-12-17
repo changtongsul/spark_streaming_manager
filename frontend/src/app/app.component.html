@@ -19,10 +19,27 @@
   <div class="card-body">
     <h6 class="card-title">{{clickedApp.appName}}</h6>
     <p class="card-text">State: {{clickedAppState?.state}}</p>
-    <div class="btn-group" role="group">
-        <button [disabled]="submitDisable" type="button" class="btn btn-primary" (click)="submitNewApp()">Submit</button>
-        <button [disabled]="killDisable" type="button" class="btn btn-primary" (click)="killApp()">Kill</button>
+    <div class="row mb-3" *ngIf="clickedAppState">
+      <div class="col">
+        <ul class="list-group">
+          <li class="list-group-item">Elapsed Time: {{clickedAppState?.elapsedTime}}</li>
+          <li class="list-group-item">Finished Time: {{clickedAppState?.finishedTime}}</li>
+          <li class="list-group-item">Memory Time: {{clickedAppState?.memorySeconds}}</li>
+        </ul>
       </div>
+      <div class="col">
+        <ul class="list-group">
+          <li class="list-group-item">Progress: {{clickedAppState?.progress}}%</li>
+          <li class="list-group-item">App Id: {{clickedAppState?.id}}</li>
+          <li class="list-group-item">User: {{clickedAppState?.user}}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="btn-group" role="group">
+      <button [disabled]="submitDisable" type="button" class="btn btn-primary" (click)="submitNewApp()">Submit</button>
+      <button [disabled]="killDisable" type="button" class="btn btn-primary" (click)="killApp()">Kill</button>
+      <button type="button" class="btn btn-primary" (click)="unregister()">Unregister App</button>
+    </div>
   </div>
 </div>
 <div class="input-group mb-3">

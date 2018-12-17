@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DataSet } from 'vis';
 import { fromEvent } from 'rxjs';
-import { pluck } from 'rxjs/operators';
+import { pluck, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,16 @@ export class AppService {
     'http://ec2-13-124-170-169.ap-northeast-2.compute.amazonaws.com:3000';
 
   constructor(private http: HttpClient) {}
+
+  getDetailedAppMetrics(appId: string) {
+    return this.getRMAppList().pipe(
+      pluck('apps'),
+      pluck('app'),
+      map((appList: any[]) => {
+        return appList.filter(app => app.id === appId)[0];
+      })
+    );
+  }
 
   getClickedNodes(network) {
     return fromEvent(network, 'click').pipe(pluck('nodes'));
@@ -47,11 +57,16 @@ export class AppService {
     return this.http.get(this.server + '/yarn/apps/registered');
   }
 
-  registerNewApp(appName: string, depApp: number) {
+  registerNewApp(appName: string, da: any) {
+    const depApp = da === '' ? null : da;
     return this.http.post(this.server + '/yarn/apps/registered', {
       appName,
       depApp
     });
+  }
+
+  unregisterApp(appId: number) {
+    return this.http.delete(this.server + `/yarn/apps/registered/${appId}`);
   }
 
   getMetric() {
