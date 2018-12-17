@@ -95,6 +95,17 @@ exports.registerApp = function(req, res) {
     })
 }
 
+exports.deleteApp = function(req, res) {
+    const appId = req.body.appId;
+    StreamingApp.destroy({where: {id: appId}})
+    .then((delRow)=>{
+        res.sendStatus(200);
+    })
+    .catch((err)=>{
+        res.sendStatus(500);
+    });
+}
+
 exports.getAppState = function(req, res) {
     const appId = req.params.id;
     rp(`${resourceManagerUrl}/cluster/apps/${appId}/state`, {json:true})

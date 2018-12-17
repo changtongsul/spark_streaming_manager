@@ -14,6 +14,7 @@ router.post('/apps/rm', yarnHandler.executeSparkSubmit);
 
 router.get('/apps/registered', yarnHandler.getRegisteredApps);
 router.post('/apps/registered', yarnHandler.registerApp);
+router.delete('/apps/registered', yarnHandler.deleteApp);
 
 router.get('/apps/:id/state', yarnHandler.getAppState);
 router.put('/apps/:id/state', yarnHandler.killApp);
