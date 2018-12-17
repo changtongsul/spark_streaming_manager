@@ -99,7 +99,7 @@ exports.deleteApp = function(req, res) {
     const appId = parseInt(req.params.id);
     StreamingApp.destroy({where: {id: appId}})
     .then((delRow)=>{
-        res.sendStatus(200);
+        res.status(200).json(delRow);
     })
     .catch((err)=>{
         res.sendStatus(500);
